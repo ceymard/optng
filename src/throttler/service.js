@@ -1,27 +1,34 @@
 (function () {
+/*!
+	@module optng.throttler
 
+	@description The throttling module, with a promise creator
+		throttler, as well as a drop-in wrapper of the $http service
+		to do throttled requests.
+*/
 var module = angular.module('optng.throttler', ['ng']);
 
 module.value('OPTNG_THROTTLER_DEFAULT_CONCURRENCY', 3);
 
-/*
-	service $optng.throttler
+/*!
+	@service $optng.throttler
 
-	usage: throttler(fn, concurrency)
+	@usage throttler(fn, concurrency)
 
-	A function wrapping a function that returns promises
-	so that it won't execute itself if /concurrency/ instances
-	are already waiting to resolve their promises.
+	@description A function wrapping a function that returns promises
+		so that it won't execute itself if /concurrency/ instances
+		are already waiting to resolve their promises.
 
-	If other promise generators need to be tied to the same throttler,
-	they can be called using $wrap() from the given throttler.
+		If other promise generators need to be tied to the same throttler,
+		they can be called using $wrap() from the given throttler.
 
-	example:
+	@example lang=javascript
 		var http = throttle($http, 3);
 		http.get = http.$wrap($http.get);
 		// and then just use it like before
 
-	TODO: For now, we just get then() and catch() methods on the
+	@todo
+		For now, we just get then() and catch() methods on the
 		promises, but no http specific ones.
 		Maybe a custom promise object with support for arbitrary
 		methods should be written.
@@ -111,9 +118,13 @@ function ($q, default_concurrency) {
 	return $throttler;
 }]);
 
-/*
-	A replacement for the $http service that is throttled by default.
-	Use it just like $http, except that you can use setConcurrency.
+/*!
+	@service $optng.throttler.http
+
+	@description
+		A replacement for the $http service that is throttled by default.
+		Use it just like $http, except that you can use setConcurrency
+		and $wrap.
 */
 module.factory('$optng.throttler.http',
 ['$http', '$optng.throttler', 'OPTNG_THROTTLER_DEFAULT_CONCURRENCY',
