@@ -1,7 +1,7 @@
 angular.module('optng.utils.ObserverGroup', []);
 
 angular.module('optng.utils.ObserverGroup').factory(
-	'$optng.utils.ObserverGroup',
+'$optng.utils.ObserverGroup',
 function () {
 
 	function ObserverGroup(fn) {
