@@ -23,13 +23,10 @@ module.run(function () {
 		return scopes;
 	};
 
-	// Reference to the regular jquery's remove method.
-	var oldremove = $.fn.remove;
-
 	/**
 
 	*/
-	$.fn.remove = function () {
+	$.fn.destroy = function () {
 
 		this.each(function (i, node) {
 			node = $(node);
@@ -48,7 +45,7 @@ module.run(function () {
 
 		});
 
-		oldremove.call(this, arguments);
+		return this.remove();
 	}
 
 });
