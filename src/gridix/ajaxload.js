@@ -2,7 +2,7 @@
 
 'use strict';
 
-var module = angular.module('optng.gridx.ajaxload', ['ng', 'optng.core']);
+var module = angular.module('optng.gridix.ajaxload', ['ng', 'optng.core']);
 
 /**
 	@directive opt-load-indicator
