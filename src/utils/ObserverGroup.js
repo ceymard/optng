@@ -1,8 +1,10 @@
-angular.module('optng.utils.ObserverGroup', []);
+(function () {
 
-angular.module('optng.utils.ObserverGroup').factory(
-'$optng.utils.ObserverGroup',
-function () {
+var module = angular.module('optng.utils.ObserverGroup', ['ng']);
+
+module.factory('$optng.utils.ObserverGroup',
+['$timeout',
+function ($timeout) {
 
 	function ObserverGroup(fn) {
 		this.vars = [];
@@ -31,4 +33,6 @@ function () {
 	}
 
 	return ObserverGroup;
-});
+}]);
+
+})();
