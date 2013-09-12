@@ -1,4 +1,4 @@
-(function ($) {
+(function () {
 
 var module = angular.module('optng.core.jquery-extensions', []);
 
@@ -50,4 +50,4 @@ module.run(function () {
 
 });
 
-})(jQuery);
+})();
