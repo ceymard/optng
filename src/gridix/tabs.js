@@ -6,14 +6,13 @@ module.directive('optTabs', [
 '$compile',
 function ($compile) {
 
-	var _template = $compile('<div class="optng-tabs">' +
-		'<ul>' +
+	var _template = $compile('<ul>' +
 			'<li ng-repeat="tab in tabs">' +
 				'<a ng-click="show_tab(tab)" href="javascript://">{{ tab.label }}</a>' +
 			'</li>' +
 		'</ul>' +
-		'<div class="optng-tab"></div>' +
-	'</div>');
+		'<div class="optng-tab"></div>'
+	);
 
 	return {
 		restrict: 'A',
@@ -23,7 +22,7 @@ function ($compile) {
 			var template = _template($scope);
 			elt.append(template);
 			var current_element = null;
-			var holder = template.children('div');
+			var holder = angular.element(template[1]);
 
 			$scope.show_tab = function (tab) {
 				if (current_element && current_element === tab.elt)
