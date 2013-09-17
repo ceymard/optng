@@ -1,6 +1,9 @@
 (function () {
 
-var module = angular.module('optng.gridix.tabs', ['ng']);
+var module = angular.module('optng.gridix.tabs', [
+	'ng',
+	'optng.core.jquery-extensions'
+]);
 
 module.directive('optTabs', [
 '$compile',
@@ -19,10 +22,13 @@ function ($compile) {
 		controller: ['$scope', '$element',
 		function ($scope, elt) {
 			$scope.tabs = [];
-			var template = _template($scope);
-			elt.append(template);
+			var holder = null;
 			var current_element = null;
-			var holder = angular.element(template[1]);
+
+			var template = _template($scope, function (clone) {
+				elt.append(clone);
+				holder = angular.element(clone[1]);
+			});
 
 			$scope.show_tab = function (tab) {
 				if (current_element && current_element === tab.elt)
@@ -50,8 +56,14 @@ function ($compile) {
 					label: title,
 					fn: transclude,
 					elt: null
-				})
+				});
+
+				console.log($scope.tabs);
 			};
+
+			$scope.$on('$destroy', function () {
+				console.log('I get destroyed');
+			})
 		}]
 	}
 }]);
