@@ -2,11 +2,8 @@
 
 var module = angular.module('optng.core.jquery-extensions', []);
 
-module.run(function () {
+module.config(function () {
 
-	/**
-
-	*/
 	$.fn.childScopes = function (scopes) {
 		scopes = scopes || [];
 
