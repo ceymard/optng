@@ -58,12 +58,8 @@ function ($compile) {
 					elt: null
 				});
 
-				console.log($scope.tabs);
 			};
 
-			$scope.$on('$destroy', function () {
-				console.log('I get destroyed');
-			})
 		}]
 	}
 }]);
