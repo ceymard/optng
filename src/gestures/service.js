@@ -115,9 +115,7 @@ var keys = {
 
 	// Mouse events
 
-	click: [0], // 0 is left mouse button
-	rightclick: [2],
-	middleclick: [1],
+	click: 'click', // 0 is left mouse button
 	dblclick: 'dblclick'
 };
 
@@ -147,10 +145,9 @@ module.factory('$optng.gestures.GestureHandler', function () {
 			}
 		}
 
-		if (_.isArray(key_int))
-			return function (event) {
-				return event.type === 'mouseup' && event.button === key_int[0] && _.all([event], modifiers);
-			}
+		return function (event) {
+			return event.type === key_int && _.all([event], modifiers);
+		}
 	}
 
 	/**
@@ -301,7 +298,7 @@ module.factory('$optng.gestures.GestureHandler', function () {
 		}
 
 		this.reset();
-		match.action({event: event});
+		match.action({$event: event});
 		return true;
 	};
 
@@ -317,21 +314,76 @@ module.factory('$optng.gestures.GestureHandler', function () {
 });
 
 /**
- *
+	@service $optng.gestures
+
+	@description The gesture service to register gestures.
  */
 module.factory('$optng.gestures',
-['$optng.gestures.GestureHandler',
-function (GestureHandler) {
+['$optng.gestures.GestureHandler', '$parse', '$rootScope',
+function (GestureHandler, $parse, $rootScope) {
 
-	var global_gestures = new GestureHandler();
+	function _make_handler(handler) {
+		return function handle(event) {
+			if (handler.check(event)) {
+				event.stopPropagation();
+				event.preventDefault();
+				return false;
+			}
+		}
+	}
 
-	$(document).on('keydown', function(event) {
-		if (global_gestures.check(event))
-			return false;
-	});
+	var global_handler = new GestureHandler();
+	var global_handle_fn = _make_handler(global_handler);
 
-	return global_gestures;
+	$(document).on('keydown', global_handle_fn);
+	$(document).on('click', global_handle_fn);
 
+	// return global_gestures;
+
+	return function (gestures, scope, elt) {
+		var handler = global_handler;
+		var handle_fn = global_handle_fn;
+
+		if (elt || elt.length > 0) {
+			handler = new GestureHandler();
+			handle_fn = _make_handler(handler);
+
+			elt.on('keydown', handle_fn);
+			elt.on('click', handle_fn);
+		}
+
+		scope = scope || $rootScope;
+
+		if (angular.isString(gestures))
+			gestures = scope.$eval(gestures);
+
+		angular.forEach(gestures, function (action, gesture) {
+
+			// If the action is not a function, we parse the action
+			// to compile it into one.
+			if (!angular.isFunction(action)) {
+				var expression = $parse(action);
+				action = function (locals) {
+					expression(scope, locals);
+					scope.$apply();
+				}
+			}
+
+			// We can now add the gesture to the handler
+			handler.addGesture(gesture, action);
+		});
+
+		// When the scope dies, we remove the gestures that we
+		// added previously.
+		scope.$on('$destroy', function () {
+			handler.removeMultipleGestures(gestures);
+
+			if (elt) {
+				elt.off('keydown', handle_fn);
+				elt.off('click', handle_fn);
+			}
+		});
+	}
 }]);
 
 })();
