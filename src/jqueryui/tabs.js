@@ -22,7 +22,7 @@ function ($factory, $compile) {
 		priority: -1,
 		link: function (scope, elt, attrs) {
 			var _titletpl = $compile('<ul>' +
-				'<li ng-repeat="tab in tabs">' +
+				'<li ng-repeat="tab in $tabs.tabs">' +
 					'<a href="#{{ tab.id }}">{{ tab.title }}<a ng-show="tab.closable" ng-click="$tabs.removeTab(tab.key)" href="javascript://"><i class="icon-remove"></i></a></a>' +
 				'</li>' +
 			'</ul>');
@@ -37,7 +37,7 @@ function ($factory, $compile) {
 
 			$scope.$parent[alias] = this;
 			$scope['$tabs'] = this;
-			$scope.tabs = [];
+			this.tabs = [];
 			$scope.$tabs.$element = $element;
 
 			// Augment the controller with its methods
@@ -52,7 +52,7 @@ function ($factory, $compile) {
 			}
 
 			this.addTab = function (tab) {
-				$scope.tabs.push(tab);
+				this.tabs.push(tab);
 
 				// Refresh the tab.
 				_refresh();
@@ -61,7 +61,7 @@ function ($factory, $compile) {
 			this.findTab = function (key) {
 				var index = -1;
 
-				angular.forEach($scope.tabs, function (tab, id) {
+				angular.forEach(this.tabs, function (tab, id) {
 					if (tab.key === key)
 						index = id;
 				});
@@ -82,8 +82,8 @@ function ($factory, $compile) {
 
 			this.removeTab = function (key) {
 				var index = this.findTab(key);
-				var tab = $scope.tabs[index];
-				$scope.tabs.splice(index, 1);
+				var tab = this.tabs[index];
+				this.tabs.splice(index, 1);
 				$('#' + tab.id).destroy();
 				_refresh();
 			}.bind(this);
