@@ -24,6 +24,7 @@ function ($factory) {
 
 	return {
 		scope: true,
+		priority: -1,
 		controller: [
 		'$scope', '$element', '$attrs',
 		function ($scope, $element, $attrs) {
@@ -31,6 +32,7 @@ function ($factory) {
 
 			$scope.$parent[alias] = this;
 			$scope['$dialog'] = this;
+			$scope.$dialog.$element = $element;
 
 			// Augment the controller with its methods
 			$factory.methods('dialog', this, $element, methods);
