@@ -42,7 +42,7 @@ function ($factory, $compile) {
 		link: function (scope, elt, attrs) {
 			var _titletpl = $compile('<ul>' +
 				'<li ng-repeat="tab in $tabs.tabs">' +
-					'<a href="#{{ tab.id }}">{{ tab.title }}<a ng-show="tab.closable" ng-click="$tabs.removeTab(tab.key)" href="javascript://"><i class="icon-remove"></i></a></a>' +
+					'<a href="#{{ tab.id }}">{{ tab.title }} <i class="icon-remove" ng-show="tab.closable" ng-click="$tabs.removeTab(tab.key)"></i></a>' +
 				'</li>' +
 			'</ul>');
 
@@ -141,8 +141,12 @@ module.directive('jqueryuiTab', function () {
 			return function (scope, elt, attrs, tabctrl) {
 				var tab = {};
 				_unique_id += 1;
+
+				attrs.$observe('jqueryuiTab', function (value) {
+					tab.title = value;
+				});
+
 				tab.id = 'optng-jqueryui-tab-' + _unique_id;
-				tab.title = attrs.jqueryuiTab;
 				tab.closable = scope.$eval(typeof attrs.jqueryuiClosable === 'undefined' ? 'false' : attrs.jqueryuiClosable || 'true');
 				tab.key = scope.$eval(attrs.jqueryuiKey || 'null') || tab.title;
 				elt.attr('id', tab.id);
