@@ -5,6 +5,25 @@ var module = angular.module('optng.jqueryui.tabs', [
 	'optng.jqueryui.core'
 ]);
 
+/**
+	@directive scope=true jqueryui-tabs
+
+	@description
+		Makes jquery-ui tabs easier to use and more angular-ish.
+		Tabs are declared with the jqueryui-tab directive. They
+		should declare a key (jqueryui-key) to help manipulating
+		them afterwards.
+
+		Creates the @code[$tabs] variable in the scope, which is in
+		fact the controller. It supports all the methods of the tabs
+		object, and adds a few.
+
+		addTab(tab)
+
+		focusTab(key)
+
+		removeTab(key)
+*/
 module.directive('jqueryuiTabs',
 ['$optng.jqueryui.factory', '$compile',
 function ($factory, $compile) {
@@ -29,6 +48,7 @@ function ($factory, $compile) {
 
 			elt.prepend(_titletpl(scope));
 		},
+		scope: true,
 		controller: [
 		'$scope', '$element', '$attrs',
 		function ($scope, $element, $attrs) {
@@ -51,8 +71,21 @@ function ($factory, $compile) {
 				});
 			}
 
-			this.addTab = function (tab) {
-				this.tabs.push(tab);
+			this.addTab = function (tab, scopeinit) {
+
+				if (!angular.isString(tab) && !angular.isElement(tab)) {
+					this.tabs.push(tab);
+				} else {
+					// tab is in fact a template.
+					// Beware that it is *not* cloned and expects a clean
+					// template to work with.
+					var tpl = angular.element(tab);
+					var newscope = $scope.$new();
+					if (scopeinit)
+						angular.extend(newscope, scopeinit);
+					$element.append(tpl);
+					$compile(tpl)(newscope);
+				}
 
 				// Refresh the tab.
 				_refresh();
@@ -102,6 +135,7 @@ module.directive('jqueryuiTab', function () {
 
 	return {
 		priority: -1,
+		scope: true,
 		compile: function (elt, attrs, transclude) {
 
 			return function (scope, elt, attrs, tabctrl) {
