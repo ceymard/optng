@@ -344,7 +344,7 @@ function (GestureHandler, $parse, $rootScope) {
 		var handler = global_handler;
 		var handle_fn = global_handle_fn;
 
-		if (elt || elt.length > 0) {
+		if (elt || elt && elt.length > 0) {
 			handler = new GestureHandler();
 			handle_fn = _make_handler(handler);
 
