@@ -216,12 +216,12 @@ function($http, $parse, $q) {
             arguments.length + " arguments.";
         }
 
-        var value = this instanceof Resource ? this : (action.isArray ? [] : new Resource(data));
         var promise = $http({
           method: action.method,
           url: route.url(extend({}, extractParams(data, action.params || {}), params)),
           data: data
         }).then(function(response) {
+            var value = null;
             var data = response.data,
               headers = response.headers();
             // FIXME: Some error handling for our JSON not connecting correctly.
@@ -234,14 +234,14 @@ function($http, $parse, $q) {
 
             if (data) {
               if (action.isArray) {
-                value.length = 0;
+                value = [];
                 forEach(data, function(item) {
                   value.push(new Resource(item));
                 });
               } else {
                 if (_.isArray(data))
                   throw 'received data is an array, but the action is waiting for an object';
-                copy(data, value);
+                value = new Resource(data);
               }
             }
             (success||noop)(value, response.headers);
@@ -257,8 +257,6 @@ function($http, $parse, $q) {
 
         if (options.error)
           promise = promise.catch(options.error)
-
-        promise.$value = value;
 
         return promise;
       };
