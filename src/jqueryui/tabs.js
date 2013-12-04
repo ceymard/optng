@@ -25,137 +25,161 @@ var module = angular.module('optng.jqueryui.tabs', [
 		removeTab(key)
 */
 module.directive('jqueryuiTabs',
-['$optng.jqueryui.factory', '$compile',
-function ($factory, $compile) {
+['$compile',
+function ($compile) {
 
-	var options = ['active', 'collapsible', 'disabled', 'event', 'heightStyle',
-		'hide', 'show',
-
-		// Events
-		'activate', 'beforeActivate', 'beforeLoad', 'create', 'load'];
-
-	var methods = ['destroy', 'disable', 'enable', 'load', 'option',
-		'refresh', 'widget'];
+	var _tpl = $compile(
+		'<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">' +
+			'<li ng-class="{\'ui-state-hover\': hovering, \'ui-state-active\': tab === $tabs.$tab}" ng-repeat="tab in $tabs.tabs" class="ui-state-default ui-corner-top">' +
+				'<a' +
+				' class="ui-tabs-anchor"href="javascript://" ng-mouseenter="hovering = true" ng-mouseleave="hovering = false" ng-click="tab.focus()">' +
+					'{{ tab.title }} ' +
+					'<i class="icon-remove" ng-show="tab.closable" ng-click="tab.remove()"></i>' +
+				'</a>' +
+			'</li>' +
+		'</ul>' +
+		'<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">' +
+			'<div ng-include="$tabs.$tab.template"></div>' +
+		'</div>'
+	);
 
 	return {
 		priority: -1,
-		link: function (scope, elt, attrs) {
-			var _titletpl = $compile('<ul>' +
-				'<li ng-repeat="tab in $tabs.tabs">' +
-					'<a href="#{{ tab.id }}">{{ tab.title }} <i class="icon-remove" ng-show="tab.closable" ng-click="$tabs.removeTab(tab.key)"></i></a>' +
-				'</li>' +
-			'</ul>');
-
-			elt.prepend(_titletpl(scope));
-		},
 		scope: true,
 		controller: [
 		'$scope', '$element', '$attrs',
 		function ($scope, $element, $attrs) {
+			$element.addClass('ui-tabs');
+			$element.addClass('ui-widget');
+			$element.addClass('ui-widget-content');
+			$element.addClass('ui-corner-all');
 
-			var alias = $attrs.jqueryuiTabs || '$tabs';
+			$scope.$tabs = this;
+			this.$tab = null;
+			this.$last_tab = null;
 
-			$scope.$parent[alias] = this;
-			$scope['$tabs'] = this;
+			// Create all the controls.
+			_tpl($scope, function (clone) {
+				$element.prepend(clone);
+			});
+
 			this.tabs = [];
-			$scope.$tabs.$element = $element;
-
-			// Augment the controller with its methods
-			$factory.methods('tabs', this, $element, methods);
-
-			var _options = $factory.parse($attrs, options, $scope);
-
-			function _refresh() {
-				setTimeout(function () {
-					$scope.$tabs.refresh();
-				});
-			}
 
 			this.addTab = function (tab, scopeinit) {
-
-				if (!angular.isString(tab) && !angular.isElement(tab)) {
-					this.tabs.push(tab);
-				} else {
-					// tab is in fact a template.
-					// Beware that it is *not* cloned and expects a clean
-					// template to work with.
-					var tpl = angular.element(tab);
-					var newscope = $scope.$new();
-					if (scopeinit)
-						angular.extend(newscope, scopeinit);
-					$element.append(tpl);
-					$compile(tpl)(newscope);
+				if (!this.$tab) {
+					this.$tab = tab;
+					this.$last_tab = tab;
 				}
 
-				// Refresh the tab.
-				_refresh();
+				tab.$parent = this;
+				this.tabs.push(tab);
 			}.bind(this);
 
 			this.findTab = function (key) {
 				var index = -1;
 
 				angular.forEach(this.tabs, function (tab, id) {
-					if (tab.key === key)
+					if (tab === key)
 						index = id;
 				});
 
 				return index;
 			}.bind(this);
 
-			this.focusTab = function (key) {
-				var index = this.findTab(key);
+			this.focus = function (tab) {
+				var index = this.findTab(tab);
 
 				if (index > -1) {
-					$element.tabs('option', 'active', index);
+					if (this.$last_tab != this.$tab) this.$last_tab = this.$tab;
+					this.$tab = this.tabs[index];
 					return true;
-				} else {
-					return false;
 				}
+
+				return false;
 			}.bind(this);
 
-			this.removeTab = function (key) {
-				var index = this.findTab(key);
-				var tab = this.tabs[index];
+			this.remove = function (tab) {
+				var index = this.findTab(tab);
 				this.tabs.splice(index, 1);
-				$('#' + tab.id).destroy();
-				_refresh();
+				$scope.$tab = this.$last_tab || this.tabs[Math.min(index, this.tabs.length - 1)];
+				$scope.$tab.focus();
+				this.$last_tab = null;
 			}.bind(this);
 
-			setTimeout(function () {
-				$element.tabs(_options);
-			}.bind(this));
 		}]
 	}
 
 }]);
 
-module.directive('jqueryuiTab', function () {
 
-	var _unique_id = 0;
+module.directive('jqueryuiTabDefault', function () {
 
 	return {
-		priority: -1,
-		scope: true,
-		compile: function (elt, attrs, transclude) {
-
-			return function (scope, elt, attrs, tabctrl) {
-				var tab = {};
-				_unique_id += 1;
-
-				attrs.$observe('jqueryuiTab', function (value) {
-					tab.title = value;
-				});
-
-				tab.id = 'optng-jqueryui-tab-' + _unique_id;
-				tab.closable = scope.$eval(typeof attrs.jqueryuiClosable === 'undefined' ? 'false' : attrs.jqueryuiClosable || 'true');
-				tab.key = scope.$eval(attrs.jqueryuiKey || 'null') || tab.title;
-				elt.attr('id', tab.id);
-				scope.$tabs.addTab(tab);
-			};
-
+		require: 'jqueryuiTab',
+		link: function (scope, elt, attrs) {
+			// Select the tab by default.
 		}
 	}
 
 });
+
+
+module.directive('jqueryuiTabClosable', function () {
+	return {
+		require: 'jqueryuiTab',
+		link: function (scope, elt, attrs, tabctrl) {
+			tabctrl.closable = true;
+		}
+	}
+});
+
+
+module.factory('$optng.jqueryui.Tab', function () {
+	var _unique_id = 0;
+
+	function Tab(v) {
+		this.$parent = null;
+		this.title = 'Tab ' + _unique_id++;
+		this.closable = false;
+		this.template = null;
+
+		angular.forEach(v, function (value, key) {
+			this[key] = value;
+		}.bind(this));
+	}
+
+	Tab.prototype = {
+		remove: function remove_tab() {
+			this.$parent.remove(this);
+		},
+		focus: function focus_tab() {
+			this.$parent.focus(this);
+		}
+	};
+
+	return Tab;
+});
+
+
+module.directive('jqueryuiTab', [
+'$optng.jqueryui.Tab',
+function (Tab) {
+
+	return {
+		priority: -1,
+		require: '^jqueryuiTabs',
+		link: function (scope, elt, attrs, $tabs) {
+			var $tab = new Tab();
+
+			attrs.$observe('jqueryuiTabTitle', function (value) {
+				$tab.title = value;
+			});
+
+			$tab.template = attrs.jqueryuiTab;
+			$tabs.addTab($tab);
+		}
+	}
+
+}]);
 
 })();
