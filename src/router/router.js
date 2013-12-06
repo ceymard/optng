@@ -1,4 +1,4 @@
-(function () {
+(function (window, angular) {
 
 if (!window.URI)
 	throw new Error('No URI.js detected ; optng.router needs it for URI manipulation.');
@@ -10,13 +10,18 @@ var module = angular.module('optng.router', ['ng']);
  *	@directive optng-route
  */
 module.directive('optngRoute', [
-'$templateCache', '$animate', '$compile', '$rootScope',
-function ($templateCache, $animate, $compile, $root) {
+'$templateCache', '$animate', '$compile', '$rootScope', '$timeout',
+function ($templateCache, $animate, $compile, $root, $timeout) {
+	var lasthash = null;
 
-	var update = _.debounce(function update() {
+	var update = function () {
 		var hash = location.hash;
 
 		if (hash) {
+			if (hash === lasthash)
+				return;
+			lasthash = hash;
+
 			hash = hash.slice(1); // Remove the leading '#'
 			var url = URI(hash);
 			var path = url.path();
@@ -30,11 +35,14 @@ function ($templateCache, $animate, $compile, $root) {
 			};
 
 			$root.$broadcast('$optngRouteChange', null);
-			$root.$apply();
 		}
-	}, 20);
+	};
 
-	$(window).on('hashchange', update);
+	var debounced_update = _.debounce(update);
+
+	$(window).on('hashchange', function () {
+		$timeout(update)
+	});
 
 	return {
 		restrict: 'A',
@@ -114,24 +122,36 @@ function ($templateCache, $animate, $compile, $root) {
 
 				});
 
-				update();
+				debounced_update();
 			}
 		}
 	};
 
 }]);
 
-module.directive('routeHref', function () {
+module.directive('routeHref',
+['$timeout',
+function ($timeout) {
 	return {
+		// priority: 0,
 		compile: function (elt, attrs) {
 			return function (scope, elt, attrs) {
+				elt.attr('href', 'javascript://');
+
 				scope.$watch('$route', function (val) {
-					elt.attr('href', '#' + val.basepath + attrs.routeHref);
+					// elt.attr('href', '#' + val.basepath + attrs.routeHref);
+				});
+
+				elt.on('click', function () {
+					$timeout(function () {
+						// $(window).trigger('hashchange');
+						location.hash = scope.$route.basepath + attrs.routeHref;
+					});
 				});
 			}
 		}
 	}
 
-});
+}]);
 
-})(); // ! module
+})(window, window.angular); // ! module
