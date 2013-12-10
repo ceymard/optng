@@ -10,8 +10,8 @@ var module = angular.module('optng.router', ['ng']);
  *	@directive optng-route
  */
 module.directive('optngRoute', [
-'$templateCache', '$animate', '$compile', '$rootScope', '$timeout',
-function ($templateCache, $animate, $compile, $root, $timeout) {
+'$templateCache', '$animate', '$compile', '$rootScope', '$timeout', '$http',
+function ($templateCache, $animate, $compile, $root, $timeout, $http) {
 	var lasthash = null;
 
 	var update = function () {
@@ -31,7 +31,8 @@ function ($templateCache, $animate, $compile, $root, $timeout) {
 				path: path,
 				query: query,
 				fullpath: path,
-				basepath: ''
+				basepath: '',
+				params: {}
 			};
 
 			$root.$broadcast('$optngRouteChange', null);
@@ -45,17 +46,19 @@ function ($templateCache, $animate, $compile, $root, $timeout) {
 	});
 
 	return {
+		priority: 1000,
 		restrict: 'A',
 		transclude: 'element',
 		scope: true,
 		compile: function (elt, attrs, transclude) {
 			var when = attrs.when || 'true',
 				route = attrs.optngRoute || attrs.route || '',
-				src = attrs.src || null; // src is optional, as we can transclude.
+				src = attrs.src || null, // src is optional, as we can transclude.
+				groups = [];
 
 			route = route.replace(/:[^\/]+/g, function (match) {
 				match = match.slice(1); // remove the ':'
-				var name = match;
+				groups.push(match);
 				return '([^\\/]+)';
 			});
 
@@ -65,6 +68,13 @@ function ($templateCache, $animate, $compile, $root, $timeout) {
 				var currentElement = null;
 				var currentScope = null;
 				var current_route_ref = {parent: null};
+
+				function broadcast(newroute) {
+					$timeout(function () {
+						currentScope.$route = newroute;
+						scope.$broadcast('$optngRouteChange', current_route_ref);
+					});
+				}
 
 				// Simple mechanism to know which router emited the event.
 				scope.$emit('$optngRouteRegister', current_route_ref);
@@ -81,6 +91,7 @@ function ($templateCache, $animate, $compile, $root, $timeout) {
 				scope.$on('$optngRouteChange', function (event, parent) {
 					var $route = scope.$route;
 					var path = $route.path;
+					var scopesrc = scope.$eval(src);
 
 					// Ignore events coming from another router than our parent.
 					if (parent !== current_route_ref.parent)
@@ -89,28 +100,45 @@ function ($templateCache, $animate, $compile, $root, $timeout) {
 					var match = route.exec(path);
 
 					if (match) {
-
 						var newroute = {
 							path: path.replace(match[0], ''),
 							query: $route.query,
 							fullpath: $route.fullpath,
-							basepath: $route.basepath + match[0]
+							basepath: $route.basepath + match[0],
+							params: angular.copy($route.params, {})
 						};
+
+						angular.forEach(groups, function (name, i) {
+							newroute.params[name] = match[i + 1];
+						});
 
 						if (!currentElement) {
 							currentScope = scope.$new();
+							currentScope.$route = newroute;
 
-							var clone = transclude(currentScope);
+							transclude(currentScope, function (clone) {
+								// Add the newly compiled element right after either the comment left
+								// by transclude: 'element', or the previous element if it existed,
+								// so that we can trigger the animations as needed.
+								$animate.enter(clone, null, currentElement || elt);
+								currentElement = clone;
 
-							// Add the newly compiled element right after either the comment left
-							// by transclude: 'element', or the previous element if it existed,
-							// so that we can trigger the animations as needed.
-							$animate.enter(clone, null, currentElement || elt);
-							currentElement = clone;
-						}
+								if (scopesrc) {
 
-						currentScope.$route = newroute;
-						scope.$broadcast('$optngRouteChange', current_route_ref);
+									$http.get(scopesrc, {cache: $templateCache}).success(function(response) {
+										clone.html(response);
+										$compile(clone.contents())(currentScope);
+										broadcast(newroute);
+									});
+
+								} else
+									broadcast(newroute);
+							});
+
+
+						} else
+							broadcast(newroute);
+
 					} else {
 						if (currentElement) {
 							currentScope.$destroy();
