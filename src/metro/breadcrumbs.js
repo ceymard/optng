@@ -38,12 +38,12 @@ function ($root) {
 			elt.append(ul);
 			elt.addClass('breadcrumbs');
 
+			// Create the buttons if they don't exist already
+			// and add them to the breadcrumbs.
 			function refresh() {
 
 				bcs = [];
 				$root.$broadcast('$metroBreadcrumbsGet', bcs);
-
-				ul.contents().remove();
 
 				angular.forEach(bcs, function (bc) {
 					var li = null;
@@ -62,7 +62,6 @@ function ($root) {
 					}
 				});
 
-				$root.$apply();
 			}
 
 			var refresh = _.debounce(refresh);
@@ -95,6 +94,12 @@ function (ObserverGroup) {
 				});
 
 				scope.$on('$destroy', function () {
+
+					// remove the element from the DOM if the scope
+					// is being destroyed.
+					if (bc.$element)
+						bc.$element.remove();
+
 					scope.$emit('$metroBreadcrumbRemoved', bc);
 				});
 
