@@ -17,7 +17,22 @@ function ($gestures) {
 	return {
 		restrict: 'A',
 		link: function (scope, elt, attrs) {
-			$gestures(attrs.optGestures, scope, elt);
+			var gestures = scope.$eval(attrs.optGestures) || {};
+
+			for (name in attrs) {
+				if (name[0] === '$' || !attrs.hasOwnProperty(name))
+					continue;
+
+				var orig_name = attrs.$attr[name];
+				if (orig_name.indexOf('on-') !== 0)
+					continue;
+				orig_name = orig_name.slice(3);
+
+				var shortcut = orig_name.replace(/-/g, ',').replace(/_/g, '+');
+				gestures[shortcut] = attrs[name];
+			}
+
+			$gestures(gestures, scope, elt);
 		}
 	};
 }]);
