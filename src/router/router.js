@@ -14,6 +14,25 @@ module.directive('optngRoute', [
 function ($templateCache, $animate, $compile, $root, $timeout, $http) {
 	var lasthash = null;
 
+	function Route() {
+
+	}
+
+	Route.prototype = {
+		change: function (path) {
+
+		},
+
+		changeRelative: function () {
+
+		},
+
+		subroute: function (path) {
+
+		}
+	}
+
+	// Update the route.
 	var update = function () {
 		var hash = location.hash;
 
@@ -41,8 +60,8 @@ function ($templateCache, $animate, $compile, $root, $timeout, $http) {
 
 	var debounced_update = _.debounce(update);
 
-	$(window).on('hashchange', function () {
-		$timeout(update)
+	angular.element(window).on('hashchange', function () {
+		$timeout(debounced_update)
 	});
 
 	return {
@@ -165,10 +184,6 @@ function ($timeout) {
 		compile: function (elt, attrs) {
 			return function (scope, elt, attrs) {
 				elt.attr('href', 'javascript://');
-
-				scope.$watch('$route', function (val) {
-					// elt.attr('href', '#' + val.basepath + attrs.routeHref);
-				});
 
 				elt.on('click', function () {
 					$timeout(function () {

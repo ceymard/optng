@@ -335,8 +335,8 @@ function (GestureHandler, $parse, $rootScope) {
 	var global_handler = new GestureHandler();
 	var global_handle_fn = _make_handler(global_handler);
 
-	$(document).on('keydown', global_handle_fn);
-	$(document).on('click', global_handle_fn);
+	angular.element(document).on('keydown', global_handle_fn);
+	angular.element(document).on('click', global_handle_fn);
 
 	// return global_gestures;
 

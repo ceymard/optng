@@ -43,7 +43,7 @@ function ($root) {
 				bcs = [];
 				$root.$broadcast('$metroBreadcrumbsGet', bcs);
 
-				ul.contents().detach();
+				ul.contents().remove();
 
 				angular.forEach(bcs, function (bc) {
 					var li = null;
@@ -120,8 +120,8 @@ function ($timeout) {
 					elt.parent().removeClass('active');
 			}
 
-			if (elt.parents('.metro') && elt.parent()[0].nodeName === 'LI') {
-				$(window).on('hashchange', function () {
+			if (elt.parent()[0].nodeName === 'LI') {
+				angular.element(window).on('hashchange', function () {
 					$timeout(update);
 				});
 			}
