@@ -182,7 +182,7 @@ function ($animate, $dnd, $parse) {
 
 			// leaving out dragover for now, since we don't want to always
 			// repeat the same stuff over and over.
-			elt.on('dragenter dragover dragleave', function (event) {
+			elt.on('dragenter dragleave', function (event) {
 				event = (event.originalEvent || event); // in case jQuery is included.
 				var dt = event.dataTransfer;
 
@@ -362,7 +362,6 @@ function ($animate, $dnd, $parse, $compile) {
 						$drag.setPlaceHolder(placeholder);
 
 						// the placeholder is inserted right *after* the element
-						$drag.element.after(placeholder);
 						$animate.enter(placeholder, null, $drag.element, function doneInserting () {
 							original_style = elt.attr('style');
 							elt.attr('style', 'display: none; !important;')

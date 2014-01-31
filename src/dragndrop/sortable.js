@@ -153,8 +153,10 @@ function ($compile, $log, $animate, $dnd) {
 
 					$compile(new_placeholder)(elt_scope);
 
+					$drag.dst_collection = scope.$eval(collection);
+
 					if (current[0] === $element.next()[0]) { // coming back
-						$drag.getPlaceHolder().after($element);
+						$element.parent()[0].insertBefore(current[0], $element[0]);
 						$drag.dst_index = elt_scope.$index;
 					} else {
 						$element.after(current);
