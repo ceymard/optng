@@ -109,7 +109,7 @@ function ($compile, $log, $animate, $dnd) {
 							// than the one we take it from, and if its original position
 							// was lower than the insertion, then we have to substract 1 to
 							// the destination index, since it has shifted.
-							// $drag.dst_index -= 1;
+							$drag.dst_index -= 1;
 						}
 
 						// insert the element in the resulting collection.
@@ -149,14 +149,14 @@ function ($compile, $log, $animate, $dnd) {
 						.addClass('opt-drag-placeholder')
 						.html('&nbsp;');
 
-					// $compile(current_placeholder)(scope);
+					$compile(current_placeholder)(elt_scope);
 
 					if ($drag.getPlaceHolder()[0] === $element.next()[0]) { // coming back
 						$drag.getPlaceHolder().after($element);
 						$drag.dst_index = elt_scope.$index;
 					} else {
 						$element.after($drag.getPlaceHolder());
-						$drag.dst_index = elt_scope.$index;
+						$drag.dst_index = elt_scope.$index + 1;
 					}
 
 					$drag.getPlaceHolder().after(current_placeholder);
