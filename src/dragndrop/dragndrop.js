@@ -230,6 +230,29 @@ function ($animate, $dnd, $parse) {
 
 
 mod.directive(
+'optDragHandle',
+function () {
+
+	return {
+		restrict: 'A',
+		require: '^optDraggable',
+		link: function (scope, elt, attrs, draggable) {
+
+			draggable.setHandle(elt);
+
+			elt.addClass('opt-drag-handle');
+
+			elt.on('mousedown', function () {
+				draggable.setHandleClicked(true);
+			});
+
+		}
+	}
+
+});
+
+
+mod.directive(
 ///////////////
 'optDraggable',
 ///////////////
@@ -247,6 +270,17 @@ function ($animate, $dnd, $parse, $compile) {
 		restrict: 'A',
 		controller: ['$scope', '$element', '$attrs',
 		function ($scope, elt, attrs) {
+
+			var handle = null;
+			var handleclicked = false;
+
+			this.setHandle = function setHandle(elt) {
+				handle = elt;
+			};
+
+			this.setHandleClicked = function setHandleClicked(val) {
+				handleclicked = val;
+			};
 
 			var on_drag_started = $parse(attrs.onDragStarted || "");
 			var on_drag_ended = $parse(attrs.onDragEnded || "");
@@ -279,6 +313,9 @@ function ($animate, $dnd, $parse, $compile) {
 						$drag.setPlaceHolder(null);
 						$drag.clearFromCache();
 
+						// reset the handle status, to be sure it won't be activated again
+						handleclicked = false;
+
 						if (original_style)
 							elt.attr('style', original_style);
 						else
@@ -290,6 +327,13 @@ function ($animate, $dnd, $parse, $compile) {
 
 					//////////////////////////////////////////
 					elt.on('dragstart', function (event) {
+						if (handle && !handleclicked) {
+							event.preventDefault();
+							// event.stopPropagation();
+							// cancel dragging if the handle was not clicked.
+							return false;
+						}
+
 						var dt = (event.originalEvent || event).dataTransfer;
 
 						dt.dropEffect = 'none'; // never let a drag change the DOM

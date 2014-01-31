@@ -145,24 +145,26 @@ function ($compile, $log, $animate, $dnd) {
 
 					var elt_scope = $element.scope();
 
-					current_placeholder = angular.element('<' + nodeName + '>')
+					var current = $drag.getPlaceHolder();
+
+					var new_placeholder = angular.element('<' + nodeName + '>')
 						.addClass('opt-drag-placeholder')
 						.html('&nbsp;');
 
-					$compile(current_placeholder)(elt_scope);
+					$compile(new_placeholder)(elt_scope);
 
-					if ($drag.getPlaceHolder()[0] === $element.next()[0]) { // coming back
+					if (current[0] === $element.next()[0]) { // coming back
 						$drag.getPlaceHolder().after($element);
 						$drag.dst_index = elt_scope.$index;
 					} else {
-						$element.after($drag.getPlaceHolder());
+						$element.after(current);
 						$drag.dst_index = elt_scope.$index + 1;
 					}
 
-					$drag.getPlaceHolder().after(current_placeholder);
+					current.after(new_placeholder);
 
 					// tell the DragData that we now have a placeholder.
-					$drag.setPlaceHolder(current_placeholder);
+					$drag.setPlaceHolder(new_placeholder);
 
 				};
 
