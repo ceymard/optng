@@ -8,7 +8,7 @@ function () {
 
 	return {
 		restrict: 'A',
-		compile: function (elt, attrs) {
+		link: function (scope, elt, attrs) {
 			var div = angular.element('<div class="input-control"></div>');
 			elt.wrap(div);
 
@@ -20,8 +20,15 @@ function () {
 			var type = (elt.attr('type') || "").toLowerCase();
 
 			if (elt[0].nodeName === 'TEXTAREA') {
+
 				div.addClass('textarea');
 				label.text(attrs.label);
+
+			} else if (elt[0].nodeName === 'SELECT') {
+
+				div.addClass('select');
+				label.text(attrs.label);
+
 			} else if (type === 'text') {
 				div.addClass('text');
 				label.text(attrs.label);
