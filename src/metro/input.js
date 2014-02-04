@@ -12,6 +12,14 @@ function () {
 			var div = angular.element('<div class="input-control"></div>');
 			elt.wrap(div);
 
+			var classes = ['size1', 'size2', 'size3', 'size4', 'size5', 'size6',
+										 'size7', 'size8', 'size9', 'size10', 'size11', 'size12'];
+
+			angular.forEach(classes, function (cls) {
+				if (elt.hasClass(cls))
+					div.addClass(cls);
+			});
+
 			var label = angular.element("<label>");
 
 			div.after(label);
@@ -24,14 +32,23 @@ function () {
 				div.addClass('textarea');
 				label.text(attrs.label);
 
+				if (!attrs.label)
+					label.remove();
+
 			} else if (elt[0].nodeName === 'SELECT') {
 
 				div.addClass('select');
 				label.text(attrs.label);
 
+				if (!attrs.label)
+					label.remove();
+
 			} else if (type === 'text') {
 				div.addClass('text');
 				label.text(attrs.label);
+
+				if (!attrs.label)
+					label.remove();
 
 				var button = angular.element('<button class="btn-clear">');
 				button.attr('tabindex', '-1');
