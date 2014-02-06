@@ -52,8 +52,8 @@ function () {
 		delete _names[name];
 	};
 
-	this.$get = ['$log', '$timeout',
-	function ($log, $timeout) {
+	this.$get = ['$log', '$timeout', '$location',
+	function ($log, $timeout, $location) {
 
 		function Route (route) {
 
@@ -141,9 +141,9 @@ function () {
 					if (!args[name])
 						throw new Error('missing argument "' + name + '" for ' + route);
 					return '' + args[name];
-				}).replace(/(\$$|(?!\/)?)/g, '');
+				}).replace(/(\$$|\?)/g, '');
 
-				window.location.hash = url;
+				$location.path(url);
 			},
 
 			/**
@@ -237,36 +237,15 @@ function () {
  */
 module.directive('optRoute', [
 '$templateCache', '$animate', '$compile', '$rootScope',
-'$timeout', '$http', '$optng.router.Route',
-function ($templateCache, $animate, $compile, $root, $timeout, $http, Route) {
+'$timeout', '$http', '$location', '$optng.router.Route',
+function ($templateCache, $animate, $compile, $root, $timeout, $http, $location, Route) {
 	var lasthash = null;
 
 	$root.$route = new Route();
 
-	// Update the route.
-	var update = function () {
-		var hash = location.hash;
-
-		if (hash) {
-			if (hash === lasthash)
-				// do not handle this event again if the hash
-				// hasn't changed.
-				return;
-			lasthash = hash;
-
-			// Remove the leading '#'
-			hash = hash.slice(1);
-
-			$root.$route.handle(hash);
-		}
-	};
-
-	var debounced_update = _.debounce(function () {
-		$timeout(update);
-	});
-
-	angular.element(window).on('hashchange', debounced_update);
-	debounced_update();
+	$root.$on('$locationChangeStart', function (pwet) {
+		$root.$route.handle($location.url());
+	})
 
 	return {
 		priority: 999, //higher than ng-include, but lower than ngRepeat
