@@ -4,6 +4,41 @@ var module = angular.module('optng.metro.breadcrumbs', [
 	'ng'
 ]);
 
+module.factory(
+'$optng.metro.breadcrumbs',
+['$animate',
+function ($animate) {
+
+	var ul = angular.element('<ul class="breadcrumbs">');
+	var _bcs = [];
+
+	return {
+		remove: function (bc) {
+			var id = _bcs.indexOf(bc);
+			if (id > -1)
+				_bcs.splice(id, 1);
+
+			if (bc.$element)
+				$animate.leave(bc.$element.parent());
+		},
+
+		add: function (bc) {
+			var li = angular.element('<li>');
+			bc.fn(bc.scope, function (clone) {
+				li.append(clone);
+				bc.$element = clone;
+			});
+
+			$animate.enter(li, ul);
+		},
+
+		getUl: function () {
+			return ul;
+		}
+	};
+
+}]);
+
 /**
  * 	@module optng.metro.breadcrumbs
  *
@@ -26,48 +61,16 @@ var module = angular.module('optng.metro.breadcrumbs', [
  */
 
 module.directive('metroBreadcrumbs', [
-'$rootScope',
-function ($root) {
+'$rootScope', '$optng.metro.breadcrumbs',
+function ($root, $bcs) {
 
 	return {
 		scope: true,
 		link: function (scope, elt, attrs) {
-			var ul = angular.element('<ul>');
-			var bcs = [];
 
-			elt.append(ul);
 			elt.addClass('breadcrumbs');
+			elt.append($bcs.getUl());
 
-			// Create the buttons if they don't exist already
-			// and add them to the breadcrumbs.
-			function refresh() {
-
-				bcs = [];
-				$root.$broadcast('$metroBreadcrumbsGet', bcs);
-
-				angular.forEach(bcs, function (bc) {
-					var li = null;
-
-					if (bc.$element)
-						ul.append(bc.$element);
-					else {
-						li = angular.element('<li>');
-
-						ul.append(li);
-
-						bc.fn(bc.scope, function (clone) {
-							li.append(clone);
-						});
-						bc.$element = li;
-					}
-				});
-
-			}
-
-			var refresh = _.debounce(refresh);
-
-			$root.$on('$metroBreadcrumbAdded', refresh);
-			$root.$on('$metroBreadcrumbRemoved', refresh);
 		}
 	};
 
@@ -75,7 +78,8 @@ function ($root) {
 
 
 module.directive('metroBreadcrumb', [
-function (ObserverGroup) {
+'$animate', '$optng.metro.breadcrumbs',
+function ($animate, $bcs) {
 
 	return {
 		priority: 1000,
@@ -89,50 +93,16 @@ function (ObserverGroup) {
 					fn: transclude
 				}
 
-				scope.$on('$metroBreadcrumbsGet', function (event, bcs) {
-					bcs.push(bc);
-				});
+				$bcs.add(bc);
 
 				scope.$on('$destroy', function () {
-
-					// remove the element from the DOM if the scope
-					// is being destroyed.
-					if (bc.$element)
-						bc.$element.remove();
-
-					scope.$emit('$metroBreadcrumbRemoved', bc);
+					$bcs.remove(bc);
 				});
-
-				scope.$emit('$metroBreadcrumbAdded', bc);
 			};
 
 		}
 	};
 
-}]);
-
-module.directive('routeHref', [
-'$timeout',
-function ($timeout) {
-	return {
-		link: function (scope, elt, attrs) {
-			function update() {
-				var path = scope.$route.basepath + attrs.routeHref;
-				if ('#' + path === location.hash) {
-					elt.parent().addClass('active');
-				}
-				else
-					elt.parent().removeClass('active');
-			}
-
-			if (elt.parent()[0].nodeName === 'LI') {
-				angular.element(window).on('hashchange', function () {
-					$timeout(update);
-				});
-			}
-			$timeout(update);
-		}
-	}
 }]);
 
 })();
