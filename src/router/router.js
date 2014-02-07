@@ -278,7 +278,10 @@ function ($templateCache, $animate, $compile, $root, $timeout, $http, $location,
 
 					while (iter && iter !== end_element) {
 						var next = iter.nextSibling;
-						$animate.leave(iter);
+						if (iter.nodeType === document.ELEMENT_NODE)
+							$animate.leave(angular.element(iter));
+						else
+							angular.element(iter).remove();
 						iter = next;
 					}
 					current_element = current_scope = null;
