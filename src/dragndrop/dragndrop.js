@@ -39,8 +39,8 @@ mod.factory(
 /**********************/
 '$optng.dragndrop',
 /**********************/
-['$cacheFactory', '$animate',
-function ($cacheFactory, $animate) {
+['$cacheFactory',
+function ($cacheFactory) {
 
 	var _cache = $cacheFactory('optng.dragndrop');
 
@@ -76,7 +76,7 @@ function ($cacheFactory, $animate) {
 		setPlaceHolder: function setPlaceHolder(newone) {
 			if (this.placeholder) {
 				// remove the previous placeholder from the DOM.
-				$animate.leave(this.placeholder);
+				this.placeholder.remove();
 			}
 			this.placeholder = newone;
 		},
@@ -125,11 +125,11 @@ mod.directive(
 ///////////////
 'optDroppable',
 ///////////////
-['$animate', '$optng.dragndrop', '$parse',
+['$optng.dragndrop', '$parse',
 /**
  *	@directive optDroppable
  */
-function ($animate, $dnd, $parse) {
+function ($dnd, $parse) {
 
 	return {
 		restrict: 'A',

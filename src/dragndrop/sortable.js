@@ -12,8 +12,8 @@ mod.directive(
 /**
  *	@directive opt-sortable
  */
-['$compile', '$log', '$animate', '$optng.dragndrop',
-function ($compile, $log, $animate, $dnd) {
+['$compile', '$log', '$optng.dragndrop',
+function ($compile, $log, $dnd) {
 
 	// since we can drag *across*
 	var _placeholder = null;
