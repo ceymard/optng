@@ -2,11 +2,16 @@
 
 var module = angular.module('optng.jqueryui.dialog', [
 	'ng',
-	'optng.core.jquery-extensions',
-	'optng.jqueryui.core'
+	'optng.jqueryui.dialog.templates',
+	'optng.jqueryui.button'
 ]);
 
-module.directive('jqueryuiDialog',
+module.run(['$rootScope', '$optng.jqueryui.dialog',
+function ($root, $dialog) {
+	$root.$dialog = $dialog;
+}])
+
+module.directive('jquiDialog',
 ['$optng.jqueryui.factory',
 function ($factory) {
 
@@ -23,12 +28,12 @@ function ($factory) {
 	var methods = ['close', 'destroy', 'isOpen', 'moveToTop', 'open', 'option', 'widget'];
 
 	return {
-		scope: true,
-		priority: -1,
+		templateUrl: '$optng.jqueryui.dialog.template',
+		transclude: 'element',
 		controller: [
 		'$scope', '$element', '$attrs',
 		function ($scope, $element, $attrs) {
-			var alias = $attrs.jqueryuiDialog || '$dialog';
+			var alias = $attrs.jquiDialog || '$dialog';
 
 			$scope.$parent[alias] = this;
 			$scope['$dialog'] = this;

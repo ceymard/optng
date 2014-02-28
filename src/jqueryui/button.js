@@ -5,20 +5,37 @@ var module = angular.module('optng.jqueryui.button', [
 	'optng.jqueryui.core'
 ]);
 
-var btnDirective = function () {
+module.directive('jquiButton',
+function () {
 
 	return {
-		restrict: 'EA',
-		controller: [
-		'$scope', '$element', '$attrs', '$optng.jqueryui.factory',
-		function (scope, elt, attrs, $factory) {
-			var options;
-			elt.button();
-		}]
+		restrict: 'A',
+		link: function ($scope, elt, attrs) {
+			var contents = elt.contents();
+			var opts = $scope.$eval(attrs.jquiButton || '{}');
+
+			var span = angular.element('<span>');
+			span.append(contents);
+
+			elt.addClass('ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only');
+
+			if (opts.type)
+				elt.addClass('btn-' + opts.type);
+
+			if (opts.icons && opts.icons.primary) {
+				var primary = angular.element('<span class="ui-icon ui-button-icon-primary"></span>');
+				primary.addClass(opts.icons.primary);
+				elt.append(primary);
+			}
+
+			elt.append(span);
+
+			if (opts.icons && opts.icons.secondary) {
+				var secondary = angular.element('<span class="ui-icon ui-button-icon-secondary"></span>');
+				secondary.addClass(opts.icons.secondary);
+				elt.append(secondary);
+			}
+		}
 	}
 
-};
-
-module.directive('button', btnDirective);
-
-})();
+});
