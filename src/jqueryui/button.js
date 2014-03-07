@@ -18,9 +18,7 @@ function () {
 			span.append(contents);
 
 			elt.addClass('ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only');
-
-			if (opts.type)
-				elt.addClass('btn-' + opts.type);
+			span.addClass('ui-button-text');
 
 			if (opts.icons && opts.icons.primary) {
 				var primary = angular.element('<span class="ui-icon ui-button-icon-primary"></span>');
@@ -36,6 +34,8 @@ function () {
 				elt.append(secondary);
 			}
 		}
-	}
+	};
 
 });
+
+})();

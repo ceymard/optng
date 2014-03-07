@@ -49,10 +49,7 @@ function ($compile) {
 		controller: [
 		'$scope', '$element', '$attrs',
 		function ($scope, $element, $attrs) {
-			$element.addClass('ui-tabs');
-			$element.addClass('ui-widget');
-			$element.addClass('ui-widget-content');
-			$element.addClass('ui-corner-all');
+			$element.addClass('ui-tabs ui-widget ui-widget-content ui-corner-all');
 
 			$scope.$tabs = this;
 			this.$tab = null;
