@@ -50,5 +50,5 @@ script(type='text/ng-template', id='$optng.jqueryui.dialog.template')
 						role='button'
 						aria-disabled='false'
 						ng-class='btn.class'
-						ng-click='btn.click.call(_dialog)'
+						ng-click='_dialog.close(btn.event_name)'
 					) {{ btn.text }}

@@ -17,7 +17,7 @@ script(type='text/ng-template', id='$optng.jqueryui.tab.template')
 				class='ui-tabs-anchor'
 				role='presentation'
 			)
-				{{ tab.title }}
+				| {{ tab.title }}
 				i.icon-remove(ng-show="tab.closable" ng-click="tab.remove()")
 
 	//- .ui-tabs-panel.ui-widget-content.ui-corner-bottom

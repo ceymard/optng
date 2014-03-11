@@ -8,6 +8,11 @@
 	Register a template as a dialog
 	$dialog.register('dialog-id', 'template-id', options);
 
+	When the dialog is about to be closed, an event is broadcast to its scope
+	with one argument : the then portion of a promise.
+	If an exception is thrown (if the promise is rejected,) the dialog won't
+	close.
+
 */
 
 var module = angular.module('optng.jqueryui.dialog', [
@@ -22,8 +27,8 @@ module.factory(
 /*=====================*/
 '$optng.jqueryui.dialog.Dialog',
 /*=====================*/
-['$rootScope', '$templateCache', '$cacheFactory', '$http', '$compile',
-function ($root, $templateCache, $cacheFactory, $http, $compile) {
+['$rootScope', '$templateCache', '$cacheFactory', '$compile', '$q',
+function ($root, $templateCache, $cacheFactory, $compile, $q) {
 
 	var body = angular.element(document).find('body');
 
@@ -73,9 +78,31 @@ function ($root, $templateCache, $cacheFactory, $http, $compile) {
 		});
 	};
 
-	Dialog.prototype.close = function close() {
+	Dialog.prototype.destroy = function destroy() {
 		this.__scope.$destroy();
 		this.__element.remove();
+	};
+
+	Dialog.prototype.close = function close(event_name) {
+		var deferred = $q.defer();
+		var promise = deferred.promise;
+		var that = this;
+		event_name = event_name || 'dialog.close';
+
+		if (event_name) {
+			this.__scope.$broadcast(event_name, function (then, fail) {
+				var origpromise = promise;
+				promise = promise.then(then, fail);
+				return origpromise;
+			});
+		}
+
+		// If all the promises are resolved and not failed, then we can close the button.
+		promise.then(function () {
+			that.destroy();
+		});
+
+		deferred.resolve(true);
 	};
 
 	return Dialog;
