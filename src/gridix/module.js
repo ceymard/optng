@@ -1,6 +1,9 @@
+(function () {
 'use strict';
 
-angular.module('optng.gridix', [
+var module = angular.module('optng.gridix', [
 	'optng.gridix.tabs',
 	'optng.gridix.ajaxload'
 ]);
+
+})();

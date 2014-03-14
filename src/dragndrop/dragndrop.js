@@ -157,7 +157,7 @@ function ($dnd, $parse) {
 			});
 
 		}
-	}
+	};
 
 }]);
 
@@ -247,7 +247,7 @@ function () {
 			});
 
 		}
-	}
+	};
 
 });
 
@@ -259,9 +259,9 @@ mod.directive(
 /**
  *	@directive opt-draggable
  *
- * 	@classes
- * 		drag-enabled: set when the element has drag enabled
- * 		drag-disabled: set when we can't drag the element no more
+ *	@classes
+ *		drag-enabled: set when the element has drag enabled
+ *		drag-disabled: set when we can't drag the element no more
  */
 ['$animate', '$optng.dragndrop', '$parse', '$compile',
 function ($animate, $dnd, $parse, $compile) {
@@ -364,7 +364,7 @@ function ($animate, $dnd, $parse, $compile) {
 						// the placeholder is inserted right *after* the element
 						$animate.enter(placeholder, null, $drag.element, function doneInserting () {
 							original_style = elt.attr('style');
-							elt.attr('style', 'display: none; !important;')
+							elt.attr('style', 'display: none; !important;');
 						});
 
 						on_drag_started($scope, {
@@ -387,6 +387,6 @@ function ($animate, $dnd, $parse, $compile) {
 		}]
 	};
 
-}])
+}]);
 
 })(); //! module optng.dragndrop

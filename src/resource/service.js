@@ -150,7 +150,7 @@ function($http, $parse, $q) {
   };
 
 
-  function ResourceFactory(url, options) {
+  function resource_factory(url, options) {
     var route = new Route(url);
     options = options || {};
     var paramDefaults = options.paramDefaults || {};
@@ -167,9 +167,9 @@ function($http, $parse, $q) {
       return ids;
     }
 
-    function Resource(value){
+    var Resource = function Resource(value){
       copy(value || {}, this);
-    }
+    };
 
     Resource = options.model || Resource;
 
@@ -186,25 +186,28 @@ function($http, $parse, $q) {
         case 4:
           error = a4;
           success = a3;
-          //fallthrough
+          data = a2;
+          params = a1;
+          break;
         case 3:
         case 2:
           if (isFunction(a2)) {
             if (isFunction(a1)) {
               success = a1;
               error = a2;
-              break;
-            }
+            } else {
+              success = a2;
+              error = a3;
 
-            success = a2;
-            error = a3;
-            //fallthrough
+              if (hasBody) data = a1;
+              else params = a1;
+            }
           } else {
             params = a1;
             data = a2;
             success = a3;
-            break;
           }
+          break;
         case 1:
           if (isFunction(a1)) success = a1;
           else if (hasBody) data = a1;
@@ -226,7 +229,7 @@ function($http, $parse, $q) {
               headers = response.headers();
             // FIXME: Some error handling for our JSON not connecting correctly.
             if (headers['content-type'].search('application/json') !== 0) {
-              error && error(response);
+              if (error) error(response);
               // console && console.error('Not JSON', response);
               data = null;
               throw 'not json';
@@ -256,7 +259,7 @@ function($http, $parse, $q) {
         }
 
         if (options.error)
-          promise = promise.catch(options.error)
+          promise = promise.catch(options.error);
 
         return promise;
       };
@@ -277,6 +280,7 @@ function($http, $parse, $q) {
             params = a1;
             success = a2 || noop;
           }
+          break;
         case 0: break;
         default:
           throw "Expected between 1-3 arguments [params, success, error], got " +
@@ -289,16 +293,16 @@ function($http, $parse, $q) {
 
     Resource.prototype.clone = function () {
       return new Resource(this);
-    }
+    };
 
     Resource.bind = function(additionalParamDefaults){
-      return ResourceFactory(url, extend({}, paramDefaults, additionalParamDefaults), actions);
+      return resource_factory(url, extend({}, paramDefaults, additionalParamDefaults), actions);
     };
 
     return Resource;
   }
 
-  return ResourceFactory;
+  return resource_factory;
 }]);
 
 })(window, window.angular);

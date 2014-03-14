@@ -2,7 +2,7 @@
 /**
  *	@module  optng.graphmaker
  *
- * 	Builds graphs using the graphmaker library.
+ *	Builds graphs using the graphmaker library.
  */
 
 var module = angular.module('optng.graphmaker', ['ng']);
@@ -11,7 +11,7 @@ var module = angular.module('optng.graphmaker', ['ng']);
  *	@directive optng-graphmaker
  *	@scope
  *
- * 	Builds
+ *	Builds
  */
 module.directive('optngGraphmaker', function () {
 
@@ -21,7 +21,7 @@ module.directive('optngGraphmaker', function () {
 		link: function (scope, elt, attrs) {
 
 		}
-	}
+	};
 
 });
 

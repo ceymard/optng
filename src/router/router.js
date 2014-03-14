@@ -39,7 +39,7 @@ function () {
 			if (angular.isArray(url)) {
 				full_url += url[0];
 				addName(full_name, full_url);
-				that.register(url[1], full_name, full_url)
+				that.register(url[1], full_name, full_url);
 			} else {
 				full_url += url;
 				addName(full_name, full_url);
@@ -202,15 +202,16 @@ function () {
 					return;
 
 				if (!fn)
-					delete this._listeners[name]
+					delete this._listeners[name];
 				else {
 					// find the function in the listeners and remove it.
 					var list = this._listeners[name];
+					var index = -1;
 					do {
-						var index = list.indexOf(fn);
+						index = list.indexOf(fn);
 						if (index > -1)
 							list.splice(index, 1);
-					} while (index > -1)
+					} while (index > -1);
 				}
 			},
 
@@ -245,7 +246,7 @@ function ($templateCache, $animate, $compile, $root, $timeout, $http, $location,
 
 	$root.$on('$locationChangeStart', function (pwet) {
 		$root.$route.handle($location.url());
-	})
+	});
 
 	return {
 		priority: 999, //higher than ng-include, but lower than ngRepeat

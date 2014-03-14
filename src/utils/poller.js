@@ -17,7 +17,7 @@ function ($timeout) {
 		this.then = null;
 		this.fail = null;
 
-	};
+	}
 
 	Poller.prototype = {
 		start: function start() {
@@ -55,7 +55,7 @@ function ($timeout) {
 			this.request = request;
 			return this;
 		}
-	}
+	};
 
 	return Poller;
 

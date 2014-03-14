@@ -14,7 +14,7 @@ function mkdirective(name) {
 				else
 					elt.append(" <i class='icon-" + icon + "'></i>");
 			}
-		}
+		};
 	}
 
 	return directive;

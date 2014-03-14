@@ -1,4 +1,4 @@
-// angular.module('optng', [
-// 	'optng.gridix',
-// 	'optng.resource'
-// ]);
+angular.module('optng', [
+	'optng.gridix',
+	'optng.resource'
+]);

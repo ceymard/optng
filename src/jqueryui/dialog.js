@@ -117,7 +117,7 @@ module.directive(
 		link: function (scope, elt, attrs) {
 
 		}
-	}
+	};
 }]);
 
 })();

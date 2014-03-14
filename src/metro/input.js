@@ -13,7 +13,7 @@ function () {
 			elt.wrap(div);
 
 			var classes = ['size1', 'size2', 'size3', 'size4', 'size5', 'size6',
-										 'size7', 'size8', 'size9', 'size10', 'size11', 'size12'];
+						'size7', 'size8', 'size9', 'size10', 'size11', 'size12'];
 
 			angular.forEach(classes, function (cls) {
 				if (elt.hasClass(cls))

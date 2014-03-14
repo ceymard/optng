@@ -61,7 +61,7 @@ function ($compile) {
 			};
 
 		}]
-	}
+	};
 }]);
 
 /**
@@ -81,10 +81,10 @@ module.directive('optTab', function () {
 			return function (scope, elt, attrs, tabsCtrl) {
 				var title = attrs.optTab || attrs.title;
 				tabsCtrl.addPane(title, transclude);
-			}
+			};
 		}
 	};
-})
+});
 
 
 })();

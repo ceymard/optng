@@ -40,24 +40,24 @@ function ($animate) {
 }]);
 
 /**
- * 	@module optng.metro.breadcrumbs
+ *	@module optng.metro.breadcrumbs
  *
  *	This module allows one to set breadcrumbs easily.
  *
  *	Set up the global breadcrumbs on the page with the metro-breadcrumbs-container
  *	directive.
  *
- * 		<div metro-breadcrumbs-container></div>
+ *		<div metro-breadcrumbs-container></div>
  *
- * 	Then, use the metro-breadcrumb="<name>" metro-bc-url="<url>" directive anywhere else.
+ *	Then, use the metro-breadcrumb="<name>" metro-bc-url="<url>" directive anywhere else.
  *
- *  The metro-breadcrumb directive doesn't create scopes, but they use them to communicate.
+ *	The metro-breadcrumb directive doesn't create scopes, but they use them to communicate.
  *
- * 	The breadcrumbs find themselves by using scope signals ($emit,) so make
- * 	sure that they are in scopes that are children of one another.
+ *	The breadcrumbs find themselves by using scope signals ($emit,) so make
+ *	sure that they are in scopes that are children of one another.
  *
- * 	The metro-breadcrumbs directive listens to these events on the root scope,
- * 	so it can be placed anywhere withing the document.
+ *	The metro-breadcrumbs directive listens to these events on the root scope,
+ *	so it can be placed anywhere withing the document.
  */
 
 module.directive('metroBreadcrumbs', [
@@ -91,7 +91,7 @@ function ($animate, $bcs) {
 				var bc = {
 					scope: scope,
 					fn: transclude
-				}
+				};
 
 				$bcs.add(bc);
 

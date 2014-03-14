@@ -55,7 +55,7 @@ function ($q, default_concurrency) {
 				queueitem = queue.shift();
 				if (queueitem) {
 					thiscontext = queueitem[0];
-					func = queueitem[1],
+					func = queueitem[1];
 					deferred = queueitem[2];
 					args = queueitem[3];
 					currently_processing += 1;
@@ -104,7 +104,7 @@ function ($q, default_concurrency) {
 
 		Throttler.$wrap = function (fn) {
 			return _wrap(fn);
-		}
+		};
 
 		Throttler.$setConcurrency = function (value) {
 			concurrency = value;

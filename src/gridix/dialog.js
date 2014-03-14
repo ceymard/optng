@@ -6,21 +6,21 @@ var module = angular.module('optng.gridix.dialog', [
 ]);
 
 /**
- * 	Create a dialog.
- * 	The dialog *always* creates a new scope ; no need to call scope.$new() before.
- * 	A `close()` function is added to the scope that will close and destroy it.
+ *	Create a dialog.
+ *	The dialog *always* creates a new scope ; no need to call scope.$new() before.
+ *	A `close()` function is added to the scope that will close and destroy it.
  *
- * 	@param scope An angular scope.
- * 	@param template A string, an element or a function. If a string
- * 	                or an element, then it is passed through $compile. Otherwise
- * 	                it is assumed it is a transclude-like function.
+ *	@param scope An angular scope.
+ *	@param template A string, an element or a function. If a string
+ *				or an element, then it is passed through $compile. Otherwise
+ *				it is assumed it is a transclude-like function.
  */
 module.factory('$optng.gridix.dialog',
 ['$compile', '$rootScope', '$timeout',
 function ($compile, $rootScope, $timeout) {
 	var body = $('body');
 
-	var dialog_template = $compile()
+	var dialog_template = $compile();
 
 	/**
 	 *	@class gridix.dialog.Dialog
@@ -37,7 +37,7 @@ function ($compile, $rootScope, $timeout) {
 	/**
 	 *	@method gridix.dialog.Dialog.show
 	 *
-	 * 	@param init An object that will be merged to the scope of the dialog.
+	 *	@param init An object that will be merged to the scope of the dialog.
 	 */
 	Dialog.prototype.show = function (init) {
 		var modal = null;
@@ -62,7 +62,7 @@ function ($compile, $rootScope, $timeout) {
 
 				scope.close = function () {
 					clone.destroy();
-					modal && modal.remove();
+					if (modal) modal.remove();
 				};
 
 				// Calling Jquery-UI's dialog method.
@@ -85,9 +85,9 @@ function ($compile, $rootScope, $timeout) {
  *	The dialog starts hidden. It can be shown by calling
  *	.show(), as specified by [[gridix.dialog.Dialog]].
  *
- * 	Attributes:
- * 		name: The name of the variable in which the dialog
- * 			will be assigned to.
+ *	Attributes:
+ *		name: The name of the variable in which the dialog
+ *			will be assigned to.
  */
 module.directive('optDialog',
 ['$optng.gridix.dialog',
@@ -110,7 +110,7 @@ function ($dialog) {
 				});
 			};
 		}
-	}
+	};
 }]);
 
 })();

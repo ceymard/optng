@@ -125,7 +125,7 @@ function ($compile, $log, $dnd) {
 
 				scope.$on('$destroy', function () {
 					container.off('dragover drop');
-				})
+				});
 
 				scope.$dragStart = function (value, collection, $index, $drag) {
 					angular.extend($drag, {

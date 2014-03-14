@@ -20,7 +20,7 @@ function () {
 				elt.off('mouseleave', del);
 			});
 		}
-	}
+	};
 
 });
 

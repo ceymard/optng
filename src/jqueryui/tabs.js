@@ -110,7 +110,7 @@ module.directive('jquiTab', function () {
 					transclude: transclude,
 					scope: scope
 				});
-			}
+			};
 		}
 	};
 

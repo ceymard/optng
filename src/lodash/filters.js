@@ -39,8 +39,8 @@ var exposed_methods = [
 _.each(exposed_methods, function (name) {
 	module.filter(name, function () {
 		return function(input) {
-			return _[name].apply(_, arguments)
-		}
+			return _[name].apply(_, arguments);
+		};
 	});
 });
 

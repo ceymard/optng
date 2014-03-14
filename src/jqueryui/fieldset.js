@@ -17,7 +17,7 @@ module.directive('fieldset', function () {
 				}
 			});
 		}
-	}
+	};
 });
 
 })();

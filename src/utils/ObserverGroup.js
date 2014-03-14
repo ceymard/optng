@@ -21,7 +21,7 @@ function ($timeout) {
 				(fn || angular.noop).apply(this, vars);
 			});
 		}, 5);
-	}
+	};
 
 	ObserverGroup.prototype.callback = function () {
 		var index = this.vars.length;
@@ -30,7 +30,7 @@ function ($timeout) {
 			this.vars[index] = res;
 			this.fn();
 		}, this);
-	}
+	};
 
 	return ObserverGroup;
 }]);

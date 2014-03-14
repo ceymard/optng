@@ -7,9 +7,9 @@ var module = angular.module('optng.gridix.ajaxload', ['ng', 'optng.core']);
 /**
 	@directive opt-load-indicator
 
-  	@description
-  		A Simpler version of the @directive-link[opt-load] directive,
-	  	this one just displays an overlay with the indicator.
+	@description
+		A Simpler version of the @directive-link[opt-load] directive,
+		This one just displays an overlay with the indicator.
 
 */
 module.directive('optLoadIndicator',
@@ -46,7 +46,7 @@ function (baseUrl) {
 			}
 
 			$attrs.$observe('optLoadIndicator', function (varname) {
-				unregister && unregister();
+				if (unregister) unregister();
 
 				unregister = $scope.$watch(varname, function () {
 					var promise = $scope[varname];
@@ -59,7 +59,7 @@ function (baseUrl) {
 					reset();
 
 					// We don't handle that case.
-					if (!promise || !promise.then || !(typeof promise.then === 'function'))
+					if (!(promise || promise.then || typeof promise.then === 'function'))
 						return;
 
 					createOverlay();
@@ -98,7 +98,7 @@ function (baseUrl) {
 				});
 			});
 		}
-	}
+	};
 
 }]);
 
@@ -129,7 +129,7 @@ function (baseUrl) {
 						next = null;
 
 					while (childscope) {
-						next = childscope.$$nextSibling
+						next = childscope.$$nextSibling;
 						childscope.$destroy();
 						childscope = next;
 					}
@@ -140,7 +140,7 @@ function (baseUrl) {
 				scope.$watch(attrs.on, function (val) {
 					// If the variable is not a promise, we just do as if it was
 					// a resolved one.
-					if (!scope[attrs.on] || !(typeof scope[attrs.on].then === 'function')) {
+					if (!(scope[attrs.on] || typeof scope[attrs.on].then === 'function')) {
 						return;
 					}
 
