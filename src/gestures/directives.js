@@ -5,7 +5,7 @@ var module = angular.module('optng.gestures.directives', ['ng', 'optng.gestures.
 function parseGestures(attrs) {
 	var gestures = {};
 
-	for (name in attrs) {
+	for (var name in attrs) {
 		if (name[0] === '$' || !attrs.hasOwnProperty(name))
 			continue;
 
@@ -54,7 +54,7 @@ function ($helper) {
 		link: function (scope, elt, attrs) {
 			$helper({'click': attrs.optClick}, scope, elt);
 		}
-	}
+	};
 }]);
 
 

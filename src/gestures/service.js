@@ -142,12 +142,12 @@ module.factory('$optng.gestures.GestureHandler', function () {
 			// Keys return numbers, unlike special events like mouse events.
 			return function (event) {
 				return event.keyCode === key_int && _.all([event], modifiers);
-			}
+			};
 		}
 
 		return function (event) {
 			return event.type === key_int && _.all([event], modifiers);
-		}
+		};
 	}
 
 	/**
@@ -155,13 +155,13 @@ module.factory('$optng.gestures.GestureHandler', function () {
 	 */
 	function makeChainChecker(expression) {
 		var split = expression.split(/\s*,\s*/);
-		return checks = _.map(split, function (exp) {
+		return _.map(split, function (exp) {
 			return {
 				expression: exp,
 				check: makeKeyChecker(exp),
 				action: null,
 				subchains: []
-			}
+			};
 		});
 	}
 
@@ -203,7 +203,7 @@ module.factory('$optng.gestures.GestureHandler', function () {
 				} else {
 					// Replace the action if we redefine a shortcut.
 					first.action = action;
-					console && console.warn('Already registered a shortcut for ' + gesture + ', redefining binding.');
+					console.warn('Already registered a shortcut for ' + gesture + ', redefining binding.');
 				}
 			} else {
 				root.push(chain[0]);
@@ -215,7 +215,7 @@ module.factory('$optng.gestures.GestureHandler', function () {
 			}
 		}
 
-		appendToChain(this.root_chain, chain)
+		appendToChain(this.root_chain, chain);
 	};
 
 	/**
@@ -307,7 +307,7 @@ module.factory('$optng.gestures.GestureHandler', function () {
 	 */
 	GestureHandler.prototype.reset = function () {
 		this.state = this.root_chain;
-	}
+	};
 
 	return GestureHandler;
 
@@ -329,7 +329,7 @@ function (GestureHandler, $parse, $rootScope) {
 				event.preventDefault();
 				return false;
 			}
-		}
+		};
 	}
 
 	var global_handler = new GestureHandler();
@@ -366,7 +366,7 @@ function (GestureHandler, $parse, $rootScope) {
 				action = function (locals) {
 					expression(scope, locals);
 					scope.$apply();
-				}
+				};
 			}
 
 			// We can now add the gesture to the handler
@@ -383,7 +383,7 @@ function (GestureHandler, $parse, $rootScope) {
 				elt.off('click', handle_fn);
 			}
 		});
-	}
+	};
 }]);
 
 })();
