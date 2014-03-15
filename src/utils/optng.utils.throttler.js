@@ -6,7 +6,7 @@
 		throttler, as well as a drop-in wrapper of the $http service
 		to do throttled requests.
 */
-var module = angular.module('optng.throttler', ['ng']);
+var module = angular.module('optng.utils.throttler', ['ng']);
 
 module.value('OPTNG_THROTTLER_DEFAULT_CONCURRENCY', 3);
 
@@ -23,7 +23,7 @@ module.value('OPTNG_THROTTLER_DEFAULT_CONCURRENCY', 3);
 		they can be called using $wrap() from the given throttler.
 
 	@example lang=javascript
-		var http = throttle($http, 3);
+		var http = throttler($http, 3);
 		http.get = http.$wrap($http.get);
 		// and then just use it like before
 
@@ -33,11 +33,11 @@ module.value('OPTNG_THROTTLER_DEFAULT_CONCURRENCY', 3);
 		Maybe a custom promise object with support for arbitrary
 		methods should be written.
 */
-module.factory('$optng.throttler',
+module.factory('optng.utils.throttler',
 ['$q', 'OPTNG_THROTTLER_DEFAULT_CONCURRENCY',
 function ($q, default_concurrency) {
 
-	function $throttler(fn, concurrency) {
+	function throttler(fn, concurrency) {
 		var currently_processing = 0,
 			queue = [],
 			Throttler = null;
@@ -115,7 +115,7 @@ function ($q, default_concurrency) {
 		return Throttler;
 	}
 
-	return $throttler;
+	return throttler;
 }]);
 
 /*!
@@ -126,10 +126,10 @@ function ($q, default_concurrency) {
 		Use it just like $http, except that you can use setConcurrency
 		and $wrap.
 */
-module.factory('$optng.throttler.http',
-['$http', '$optng.throttler', 'OPTNG_THROTTLER_DEFAULT_CONCURRENCY',
-function ($http, $throttler, default_concurrency) {
-	var http = $throttler($http, default_concurrency);
+module.factory('optng.utils.throttler.http',
+['$http', 'optng.utils.throttler', 'OPTNG_THROTTLER_DEFAULT_CONCURRENCY',
+function ($http, throttler, default_concurrency) {
+	var http = throttler($http, default_concurrency);
 
 	_.each(['get', 'head', 'post', 'put', 'delete', 'jsonp'], function (method) {
 		var wrapped = http.$wrap($http[method]);
