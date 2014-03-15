@@ -17,7 +17,7 @@
 
 var module = angular.module('optng.jqueryui.dialog', [
 	'ng',
-	'optng.jqueryui.dialog.templates',
+	'optng.jqueryui.dialog.tpl',
 	'optng.jqueryui.button'
 ]);
 
@@ -32,8 +32,8 @@ function ($root, $templateCache, $cacheFactory, $compile, $q) {
 
 	var body = angular.element(document).find('body');
 
-	var dlg_cache = $cacheFactory('$optng.jqueryui.dialogs');
-	var dialog_template = $templateCache.get('$optng.jqueryui.dialog.template');
+	var dlg_cache = $cacheFactory('optng.jqueryui.dialog');
+	var dialog_template = $templateCache.get('optng-jqueryui-dialog');
 
 	//////////////////////////////////
 
@@ -68,7 +68,7 @@ function ($root, $templateCache, $cacheFactory, $compile, $q) {
 
 		// Inject the initial values into the dialog.
 		angular.extend(isolate, init);
-		isolate._dialog = this;
+		isolate.opt_dialog = this;
 
 		// Append the dialog to the body.
 		this.__template(isolate, function (clone, scope) {

@@ -3,7 +3,7 @@
 var module = angular.module('optng.jqueryui.tabs', [
 	'ng',
 	'optng.jqueryui.core',
-	'optng.jqueryui.tabs.templates'
+	'optng.jqueryui.tabs.tpl'
 ]);
 
 /**
@@ -29,7 +29,7 @@ module.directive('jquiTabs',
 ['$compile', '$templateCache', '$animate', '$timeout',
 function ($compile, $tc, $animate, $timeout) {
 
-	var template = $compile($tc.get('$optng.jqueryui.tab.template'));
+	var template = $compile($tc.get('optng-jqueryui-tabs'));
 
 	return {
 		controller: [
