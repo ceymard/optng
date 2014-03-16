@@ -5,7 +5,7 @@ var module = angular.module('optng.utils.watcher', [
 	'optng.utils.events'
 ]);
 
-module.factory('optng.utils.watcher',
+module.factory('optng.utils.Watcher',
 ['$timeout', 'optng.utils.events.Eventable', 'optng.utils.goodparts',
 function ($timeout, Eventable, goodparts) {
 

@@ -6,7 +6,7 @@
 (function(window, angular, undefined) {
 'use strict';
 
-angular.module('optng.resource', ['ng', 'optng.throttler']);
+angular.module('optng.resource', ['ng', 'optng.utils.throttler']);
 
 angular.module('optng.resource')
   .value('OPTNG_RESOURCE_CONCURRENCY', 3);
@@ -41,7 +41,7 @@ angular.module('optng.resource')
  * });
  */
 angular.module('optng.resource').factory('$optng.resource',
-['$optng.throttler.http', '$parse', '$q',
+['optng.utils.throttler.http', '$parse', '$q',
 function($http, $parse, $q) {
 
   var DEFAULT_ACTIONS = {
