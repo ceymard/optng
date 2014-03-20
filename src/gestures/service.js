@@ -119,7 +119,7 @@ var keys = {
 	dblclick: 'dblclick'
 };
 
-module.factory('$optng.gestures.GestureHandler', function () {
+module.factory('optng.gestures.GestureHandler', function () {
 	/**
 	 * Transform an expression such as "Alt+Shift+3" to a modifiers object.
 	 */
@@ -318,8 +318,8 @@ module.factory('$optng.gestures.GestureHandler', function () {
 
 	@description The gesture service to register gestures.
  */
-module.factory('$optng.gestures',
-['$optng.gestures.GestureHandler', '$parse', '$rootScope',
+module.factory('optng.gestures',
+['optng.gestures.GestureHandler', '$parse', '$rootScope',
 function (GestureHandler, $parse, $rootScope) {
 
 	function _make_handler(handler) {

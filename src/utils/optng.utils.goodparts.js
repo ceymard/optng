@@ -14,7 +14,7 @@ module.factory('optng.utils.goodparts', function () {
         },
         methods: function methods(_methods) {
             for (var name in _methods)
-                this.method(name, _methods[name]);
+                this.prototype[name] = _methods[name];
             return this;
         },
         uses: function uses() {
@@ -30,8 +30,9 @@ module.factory('optng.utils.goodparts', function () {
     };
 
     function goodparts(fn) {
-        this.obj = fn;
-        this.obj.prototype.constructor = fn;
+        angular.extend(fn, methods);
+        fn.prototype.constructor = fn;
+        return fn;
     }
 
     return goodparts;

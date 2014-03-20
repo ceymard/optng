@@ -31,7 +31,7 @@ function parseGestures(attrs) {
 			}">
 */
 module.directive('optGestures',
-['$optng.gestures',
+['optng.gestures',
 function ($gestures) {
 	return {
 		restrict: 'A',
@@ -47,7 +47,7 @@ function ($gestures) {
 
 
 module.directive('optClick',
-['$optng.gestures',
+['optng.gestures',
 function ($helper) {
 	return {
 		restrict: 'A',
@@ -64,7 +64,7 @@ function ($helper) {
 	@see gestures
 */
 module.directive('optGlobalGestures',
-['$optng.gestures',
+['optng.gestures',
 function ($gestures) {
 
 	return {

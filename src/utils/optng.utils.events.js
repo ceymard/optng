@@ -1,15 +1,17 @@
 (function () {
 
-var module = angular.module('optng.utils.events', []);
+var module = angular.module('optng.utils.events', [
+    'optng.utils.goodparts'
+]);
 
-module.factory('optng.utils.events.Eventable', function () {
+module.factory('optng.utils.events.Eventable',
+['optng.utils.goodparts',
+function (goodparts) {
 
-    function Eventable() {
+    var Eventable = goodparts(function Eventable() {
         this._listeners = {};
-    }
-
-    Eventable.prototype = {
-        constructor: Eventable,
+    })
+    .methods({
         on: function (name, fn) {
             this._listeners[name] = this._listeners[name] || [];
             this._listeners[name].push(fn);
@@ -37,9 +39,9 @@ module.factory('optng.utils.events.Eventable', function () {
                 listeners[i].apply(this, args);
             }
         }
-    };
+    });
 
     return Eventable;
-});
+}]);
 
 })();
