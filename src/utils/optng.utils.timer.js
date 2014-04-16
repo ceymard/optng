@@ -2,7 +2,8 @@
 
 var module = angular.module('optng.utils.timer', [
 	'ng',
-	'optng.utils.goodparts'
+	'optng.utils.goodparts',
+	'optng.utils.events'
 ]);
 
 module.factory('optng.utils.timer',
@@ -12,23 +13,24 @@ function ($root, goodparts, Eventable) {
 	var Timer = goodparts(function Timer(interval) {
 		Eventable.call(this); // parent constructor.
 
-		this.interval = interval;
-		this.interval_id = null;
+		this._interval = interval;
+		this._interval_id = null;
 	})
 	.inherits(Eventable)
 	.methods({
 		start: function start() {
-			if (!this.interval_id) {
+			if (!this._interval_id) {
 				this.trigger('start');
-				this.interval_id = setInterval(angular.bind(this, this.poll), this.interval);
+				this.poll();
+				this._interval_id = setInterval(angular.bind(this, this.poll), this._interval * 1000);
 			}
 			return this;
 		},
 
 		stop: function stop() {
-			if (this.interval_id) {
-				clearInterval(this.interval_id);
-				this.interval_id = null;
+			if (this._interval_id) {
+				clearInterval(this._interval_id);
+				this._interval_id = null;
 				this.trigger('stop');
 			}
 			return this;
@@ -41,13 +43,13 @@ function ($root, goodparts, Eventable) {
 		},
 
 		running: function running() {
-			return this.interval_id !== null;
+			return this._interval_id !== null;
 		},
 
 		interval: function interval(intval) {
 			if (intval) {
-				this.interval = intval;
-				if (this.interval_id)
+				this._interval = intval;
+				if (this._interval_id)
 					this.reset();
 			}
 			return this;
