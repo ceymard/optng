@@ -15,6 +15,7 @@ function (goodparts) {
         on: function (name, fn) {
             this._listeners[name] = this._listeners[name] || [];
             this._listeners[name].push(fn);
+            return this;
         },
 
         off: function (name, fn) {
@@ -26,6 +27,7 @@ function (goodparts) {
             } else {
                 this._listeners[name] = [];
             }
+            return this;
         },
 
         trigger: function (name) {
@@ -38,6 +40,7 @@ function (goodparts) {
             for (var i = 0; i < listeners.length; i++) {
                 listeners[i].apply(this, args);
             }
+            return this;
         }
     });
 
