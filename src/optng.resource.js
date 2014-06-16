@@ -6,10 +6,9 @@
 (function(window, angular, undefined) {
 'use strict';
 
-angular.module('optng.resource', ['ng', 'optng.utils.throttler']);
+var mod = angular.module('optng.resource', ['ng', 'optng.utils.throttler']);
 
-angular.module('optng.resource')
-  .value('OPTNG_RESOURCE_CONCURRENCY', 3);
+mod.value('OPTNG_RESOURCE_CONCURRENCY', 3);
 
 /**
  * NOTE
@@ -40,7 +39,7 @@ angular.module('optng.resource')
  *   value.method(); // this works.
  * });
  */
-angular.module('optng.resource').factory('$optng.resource',
+mod.factory('optng.resource',
 ['optng.utils.throttler.http', '$parse', '$q',
 function($http, $parse, $q) {
 
