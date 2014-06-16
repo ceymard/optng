@@ -8,10 +8,10 @@
 */
 (function () {
 
-angular.module('optng.gestures', ['optng.gestures.directives', 'optng.gestures.service']);
-
 // The module declaration.
-var module = angular.module('optng.gestures.service', []);
+var module = angular.module('optng.gestures', [
+	'optng.gestures.service'
+]);
 
 var keys = {
 	backspace: 8,

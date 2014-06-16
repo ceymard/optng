@@ -6,7 +6,7 @@
 		an html5 editable component that stores its contents into
 		the given ng-model variable.
 */
-angular.module('optng.edit.editable', ['ng']).directive('optEditable', function () {
+angular.module('optng.edit', ['ng']).directive('optEditable', function () {
 
 	return {
 		restrict: 'A',
@@ -39,3 +39,4 @@ angular.module('optng.edit.editable', ['ng']).directive('optEditable', function 
 	};
 
 });
+
