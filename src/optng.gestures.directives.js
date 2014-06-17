@@ -1,6 +1,6 @@
 (function () {
 
-var module = angular.module('optng.gestures.directives', ['ng', 'optng.gestures.service']);
+var module = angular.module('optng.gestures.directives', ['optng.gestures.service']);
 
 function parseGestures(attrs) {
 	var gestures = {};
