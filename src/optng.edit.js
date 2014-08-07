@@ -6,37 +6,38 @@
 		an html5 editable component that stores its contents into
 		the given ng-model variable.
 */
-angular.module('optng.edit', ['ng']).directive('optEditable', function () {
+angular.module('optng.edit', ['ng']).directive('optEditable', [
+'$rootScope',
+function ($root) {
 
 	return {
 		restrict: 'A',
 		require: '?ngModel',
 		link: function(scope, element, attr, ngModel) {
-				function read () {
-						return ngModel.$setViewValue(element.html());
-				}
 
-				// The contenteditable attribute must be set on the element
-				// for it to actually be editable by the browser.
-				element.attr('contenteditable', 'true');
+			// The contenteditable attribute must be set on the element
+			// for it to actually be editable by the browser.
+			element.attr('contenteditable', 'true');
 
-				// If used in conjunction with ng-model, register some logic
-				// to update the value of the model.
-				if (ngModel) {
+			// If used in conjunction with ng-model, register some logic
+			// to update the value of the model.
+			if (ngModel) {
 
-						ngModel.$render = function() {
-								return element.html(ngModel.$viewValue || '');
-						};
+				ngModel.$render = function() {
+					return element.html(ngModel.$viewValue || '');
+				};
 
-						element.on('blur keyup change', read);
+				var observer = new MutationObserver(function read(mutations) {
+					ngModel.$setViewValue(element.html());
+					$root.$apply();
+				});
 
-						// Do not listen to these events anymore.
-						scope.$on('$destroy', function () {
-								element.off('blur keyup change', read);
-						});
-				}
+				observer.observe(element[0], {childList: true, subtree: true, characterData: true});
+				scope.$on('$destroy', function () { observer.disconnect(); });
+			}
+
 		}
 	};
 
-});
+}]);
 
