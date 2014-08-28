@@ -14,11 +14,14 @@ function ($timeout, Eventable, goodparts) {
 		this.change_pending = false;
 		this.vars = [];
 		this.obj_vars = {};
+		this.index = 0;
 	})
 	.inherits(Eventable)
 	.methods({
 		callback: function callback(name) {
 			var self = this;
+			var index = self.index++;
+
 			if (name) {
 				return function (res) {
 					self.obj_vars[name] = res;
@@ -46,7 +49,7 @@ function ($timeout, Eventable, goodparts) {
 
 			var args = ['changed'];
 			args = args.concat(this.vars);
-			args.push(obj_vars);
+			args.push(self.obj_vars);
 
 			this.trigger.apply(this, args);
 		}
